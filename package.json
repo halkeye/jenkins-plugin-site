@@ -1,0 +1,44 @@
+{
+  "name": "jenkins-plugin-site",
+  "version": "1.0.0",
+  "description": "New gatsby based plugin site for jenkins",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "lint": "eslint"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/halkeye/jenkins-plugin-site.git"
+  },
+  "keywords": [
+    "jenkins",
+    "gatsby"
+  ],
+  "author": "Gavin Mogan <npm@gavinmogan.com> (https://www.gavinmogan.com/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/halkeye/jenkins-plugin-site/issues"
+  },
+  "homepage": "https://github.com/halkeye/jenkins-plugin-site#readme",
+  "devDependencies": {
+    "eslint": "^6.7.1",
+    "eslint-config-standard": "^14.1.0",
+    "eslint-plugin-node": "^10.0.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-react": "^7.16.0",
+    "gatsby": "^2.18.4",
+    "gatsby-source-custom-api": "^2.1.2",
+    "jest": "^24.9.0",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0"
+  },
+  "dependencies": {
+    "chart.js": "^2.9.3",
+    "gatsby-plugin-manifest": "^2.2.30",
+    "gatsby-plugin-react-helmet": "^3.1.16",
+    "moment": "^2.24.0",
+    "react-chartjs-2": "^2.8.0",
+    "react-helmet": "^5.2.1"
+  }
+}
