@@ -315,7 +315,7 @@ function PluginPage({ data: { jenkinsPlugin: plugin }}) {
               </div>
               <h5>Labels</h5>
               <Labels labels={plugin.labels} />
-              {shouldShowWikiUrl(plugin.wiki.url) &&
+              {plugin.wiki && shouldShowWikiUrl(plugin.wiki) &&
                   <div className="update-link">
                     <h6>Are you maintaining this plugin?</h6>
                     <p>Visit the <a href={plugin.wiki.url} target="_wiki">Jenkins Plugin Wiki</a> to edit this content.</p>
