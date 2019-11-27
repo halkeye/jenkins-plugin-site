@@ -6,6 +6,7 @@ import moment from 'moment';
 
 
 import { cleanTitle } from '../commons/helper';
+import Layout from '../layout';
 import LineChart from '../components/LineChart';
 import NotFound from '../components/NotFound';
 import Spinner from '../components/Spinner';
@@ -252,7 +253,7 @@ function ReadableInstalls({ currentInstalls}) {
 
 function PluginPage({ data: { jenkinsPlugin: plugin }}) {
   return (
-    <div>
+    <Layout>
       <div className="row flex">
         <div className="col-md-9 main">
           <div className="container-fluid padded">
@@ -306,7 +307,7 @@ function PluginPage({ data: { jenkinsPlugin: plugin }}) {
           <InactiveWarnings securityWarnings={plugin.securityWarnings} />
         </div>
       </div>
-    </div>
+    </Layout>
   );
 }
 

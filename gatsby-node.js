@@ -1,7 +1,19 @@
+/* eslint-env node */
+/* eslint-disable no-console */
 const path = require('path');
+const fs = require('fs');
+
+const { makeReactLayout } = require('./utils.js');
+
+exports.onPreBootstrap = async () => {
+  const layout = await makeReactLayout();
+  if (layout) {
+    fs.writeFileSync('./src/layout.jsx', layout);
+  }
+};
 
 exports.createPages = async ({ graphql, actions }) => {
-  const { createPage, createRedirect } = actions;
+  const { createPage } = actions;
   const pluginPage = path.resolve('src/templates/plugin.jsx');
 
   await graphql(`{
