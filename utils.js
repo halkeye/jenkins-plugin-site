@@ -14,7 +14,7 @@ async function makeReactLayout() {
 
   const lines = [
     'import React from \'react\';',
-    'import Helmet from \'react-helmet\';',
+    'import { Helmet, HelmetProvider } from \'react-helmet-async\';',
   ];
 
   console.info(`Downloading header file from '${headerUrl}'`);
@@ -30,6 +30,7 @@ async function makeReactLayout() {
     });
 
   const $ = cheerio.load(content, { decodeEntities: false });
+  $('title').text('Title must not be empty');
   $('img, script').each(function () {
     const src = $(this).attr('src');
     if (src && src.startsWith('/')) {
@@ -43,17 +44,21 @@ async function makeReactLayout() {
     }
   });
   // Even though we're supplying our own this one still causes a conflict.
-  $('link[href*="/css/font-icons.css"]').remove();
+  $('link[href$="/css/font-icons.css"]').remove();
   // Prevents: Access to resource at 'https://jenkins.io/site.webmanifest' from origin 'https://plugins.jenkins.io' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
-  $('link[href*="site.webmanifest"]').remove();
+  $('link[href$="site.webmanifest"]').remove();
 	// No jquery in react
-  $('script[src*="/assets/bower/jquery/jquery.min.js"]').remove();
+  $('script[src$="/assets/bower/jquery/jquery.min.js"]').remove();
   // FIXME - delete all the bower items?
 
   $('#grid-box').append('{children}');
 
   const keyConversion = {
     class: 'className',
+    'charSet': 'charset',
+    'http-equiv': 'httpEquiv',
+    'stop-color': 'stopColor',
+    'crossorigin': 'crossOrigin'
   };
 
 	const handleNode = (node, indent = 0) => {
@@ -63,8 +68,13 @@ async function makeReactLayout() {
     }
 
     const prefix = ''.padStart(6+indent);
+    if (node.name === 'link' && node.attribs && node.attribs.rel === 'stylesheet') {
+      delete node.attribs.crossorigin;
+      node.attribs.type = 'text/css';
+    }
     const attrs = Object.entries(node.attribs || {}).map(([key, val]) => {
       key = keyConversion[key] || key;
+      val = val.replace(/"/g, '\\"');
       return `${key}="${val}"`;
     }).join(' ');
     if (node.type === 'comment') {
@@ -88,12 +98,13 @@ async function makeReactLayout() {
 
   lines.push('export default function Layout({ children }) {');
   lines.push('  return (');
-  lines.push('    <React.Fragment>');
+  lines.push('    <HelmetProvider><div>');
   lines.push('      <Helmet>');
-  $('head').children().each((idx, child) => handleNode(child, 2));
+  $('head').children(':not(link[rel="stylesheet"])').each((idx, child) => handleNode(child, 2));
+  $('head').children('link[rel="stylesheet"]').each((idx, child) => handleNode(child, 0));
   lines.push('      </Helmet>');
   $('body').children().each((idx, child) => handleNode(child, 0));
-  lines.push('    </React.Fragment>');
+  lines.push('    </div></HelmetProvider>');
   lines.push('  );');
 
 

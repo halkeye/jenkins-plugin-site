@@ -4,6 +4,7 @@
   "description": "New gatsby based plugin site for jenkins",
   "main": "index.js",
   "scripts": {
+    "dev": "gatsby develop -p 3000 -H 0.0.0.0",
     "test": "jest",
     "lint": "eslint"
   },
@@ -38,9 +39,10 @@
     "chart.js": "^2.9.3",
     "cheerio": "^1.0.0-rc.3",
     "gatsby-plugin-manifest": "^2.2.30",
-    "gatsby-plugin-react-helmet": "^3.1.16",
+    "gatsby-plugin-react-helmet-async": "^1.0.11",
     "moment": "^2.24.0",
     "react-chartjs-2": "^2.8.0",
-    "react-helmet": "^5.2.1"
+    "react-header-modal": "^0.4.13",
+    "react-helmet-async": "^1.0.4"
   }
 }

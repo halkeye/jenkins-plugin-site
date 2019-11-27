@@ -3,6 +3,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import moment from 'moment';
+import {Helmet} from 'react-helmet-async';
 
 
 import { cleanTitle } from '../commons/helper';
@@ -254,6 +255,13 @@ function ReadableInstalls({ currentInstalls}) {
 function PluginPage({ data: { jenkinsPlugin: plugin }}) {
   return (
     <Layout>
+      <Helmet>
+        <title>{cleanTitle(plugin.title)}</title>
+        <meta content={cleanTitle(plugin.title)} name="apple-mobile-web-app-title" />
+        <meta content={cleanTitle(plugin.title)} name="twitter:title" />
+        <meta content={cleanTitle(plugin.title)} property="og:title" />
+        <meta content="Jenkins plugin" property="og:site_name" />
+      </Helmet>
       <div className="row flex">
         <div className="col-md-9 main">
           <div className="container-fluid padded">

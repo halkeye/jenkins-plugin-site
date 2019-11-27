@@ -16,7 +16,7 @@ describe('main', function () {
         activityTimer: jest.fn().mockReturnValue(this.activityReturn),
         panic: jest.fn()
       },
-      boundActionCreators: {
+      actions: {
         createNode: jest.fn()
       }
     };
@@ -32,7 +32,7 @@ describe('main', function () {
     const ret = await gatsbyNode.sourceNodes(this.sourceNodeOptions, {
     });
     expect(this.sourceNodeOptions.reporter.panic.mock.calls).toEqual([]);
-    expect(this.sourceNodeOptions.boundActionCreators.createNode.mock.calls[0]).toEqual([
+    expect(this.sourceNodeOptions.actions.createNode.mock.calls[0]).toEqual([
       {
         book: {
           authors: [
