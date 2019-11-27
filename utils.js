@@ -14,7 +14,7 @@ async function makeReactLayout() {
 
   const lines = [
     'import React from \'react\';',
-    'import { Helmet, HelmetProvider } from \'react-helmet-async\';',
+    'import { Helmet } from \'react-helmet\';',
   ];
 
   console.info(`Downloading header file from '${headerUrl}'`);
@@ -71,6 +71,7 @@ async function makeReactLayout() {
     if (node.name === 'link' && node.attribs && node.attribs.rel === 'stylesheet') {
       delete node.attribs.crossorigin;
       node.attribs.type = 'text/css';
+      node.attribs.media = 'all';
     }
     const attrs = Object.entries(node.attribs || {}).map(([key, val]) => {
       key = keyConversion[key] || key;
@@ -98,13 +99,13 @@ async function makeReactLayout() {
 
   lines.push('export default function Layout({ children }) {');
   lines.push('  return (');
-  lines.push('    <HelmetProvider><div>');
+  lines.push('    <div>');
   lines.push('      <Helmet>');
   $('head').children(':not(link[rel="stylesheet"])').each((idx, child) => handleNode(child, 2));
-  $('head').children('link[rel="stylesheet"]').each((idx, child) => handleNode(child, 0));
+  $('head').children('link[rel="stylesheet"]').each((idx, child) => handleNode(child, 2));
   lines.push('      </Helmet>');
   $('body').children().each((idx, child) => handleNode(child, 0));
-  lines.push('    </div></HelmetProvider>');
+  lines.push('    </div>');
   lines.push('  );');
 
 

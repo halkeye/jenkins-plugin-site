@@ -1,5 +1,5 @@
-const axios = require(`axios`);
-const crypto = require(`crypto`);
+const axios = require('axios');
+const crypto = require('crypto');
 
 /*
 plugins: `
@@ -57,7 +57,7 @@ exports.sourceNodes = async (
   const { createNode } = actions;
 
   // Do the initial fetch
-  activity = reporter.activityTimer(`fetch plugin data`);
+  const activity = reporter.activityTimer('fetch plugin data');
   activity.start();
 
   let page = 1;
@@ -65,13 +65,12 @@ exports.sourceNodes = async (
     while (1) {
       const pluginsContainer = await axios
         .get(`https://plugins.jenkins.io/api/plugins/?limit=100&page=${page}`)
-        .then(function checkStatus(results) {
+        .then((results) => {
           if (results.status !== 200) {
             throw results.data;
           }
           return results.data;
         });
-
 
       for (const plugin of pluginsContainer.plugins) {
         createNode({
@@ -80,11 +79,11 @@ exports.sourceNodes = async (
           parent: null,
           children: [],
           internal: {
-            type: `JenkinsPlugin`,
+            type: 'JenkinsPlugin',
             contentDigest: crypto
-              .createHash(`md5`)
+              .createHash('md5')
               .update(`plugin${plugin.name}`)
-              .digest(`hex`)
+              .digest('hex')
           }
         });
       }

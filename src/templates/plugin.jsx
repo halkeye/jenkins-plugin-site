@@ -1,10 +1,10 @@
-import { graphql , Link } from 'gatsby';
+import { graphql , Link, navigate } from 'gatsby';
 import React from 'react';
 import PropTypes from 'prop-types';
 
 import moment from 'moment';
-import {Helmet} from 'react-helmet-async';
-
+import { Helmet } from 'react-helmet';
+import ModalView, {Body, Header} from 'react-header-modal';
 
 import { cleanTitle } from '../commons/helper';
 import Layout from '../layout';
@@ -129,7 +129,6 @@ function shouldShowWikiUrl({ url }) {
 
 function ActiveWarnings({ securityWarnings }) {
   const [isShowWarnings, setShowImplied] = React.useState(false);
-  console.log({ isShowWarnings });
   const showWarnings = (e) => {
     e.preventDefault();
     setShowWarnings(true);
@@ -207,9 +206,9 @@ function InactiveWarnings({securityWarnings}) {
             <li key={warning.ur}>
               <h7><a href={warning.url}>{warning.message}</a></h7>
               <ul>
-                {warning.versions.map(version => {
+                {warning.versions.map((version, idx) => {
                   return (
-                    <li>
+                    <li key={idx}>
                       <ReadableVersion version={version} active={false} />
                     </li>
                   );
@@ -253,6 +252,11 @@ function ReadableInstalls({ currentInstalls}) {
 }
 
 function PluginPage({ data: { jenkinsPlugin: plugin }}) {
+  const beforeClose = (event) => {
+    event && event.preventDefault();
+    navigate('/');
+    return;
+  };
   return (
     <Layout>
       <Helmet>
@@ -262,59 +266,66 @@ function PluginPage({ data: { jenkinsPlugin: plugin }}) {
         <meta content={cleanTitle(plugin.title)} property="og:title" />
         <meta content="Jenkins plugin" property="og:site_name" />
       </Helmet>
-      <div className="row flex">
-        <div className="col-md-9 main">
-          <div className="container-fluid padded">
-            <h1 className="title">
-              {cleanTitle(plugin.title)}
-              <ActiveWarnings securityWarnings={plugin.securityWarnings} />
-              {/*this.getImpliedModal()*/}
-              <span className="v">{plugin.version}</span>
-              <span className="sub">Minimum Jenkins requirement: {plugin.requiredCore}</span>
-              <span className="sub">ID: {plugin.name}</span>
-            </h1>
-            <div className="row flex">
-              <div className="col-md-4">
-                {plugin.stats &&  <div>Installs: <ReadableInstalls currentInstalls={plugin.stats.currentInstalls} /></div>}
-                {plugin.scm && plugin.scm.link && <div><a href={plugin.scm.link}>GitHub →</a></div>}
-                <LastReleased plugin={plugin} />
-              </div>
-              <div className="col-md-4 maintainers">
-                <h5>Maintainers</h5>
-                <Maintainers maintainers={plugin.maintainers} />
-              </div>
-              <div className="col-md-4 dependencies">
-                <h5>Dependencies</h5>
-                <Dependencies dependencies={plugin.dependencies} />
+      <ModalView hideOnOverlayClicked isVisible ignoreEscapeKey {...{beforeClose}}>
+        <Header>
+          <div className="back" onClick={beforeClose}>Find plugins</div>
+        </Header>
+        <Body>
+          <div className="row flex">
+            <div className="col-md-9 main">
+              <div className="container-fluid padded">
+                <h1 className="title">
+                  {cleanTitle(plugin.title)}
+                  <ActiveWarnings securityWarnings={plugin.securityWarnings} />
+                  {/*this.getImpliedModal()*/}
+                  <span className="v">{plugin.version}</span>
+                  <span className="sub">Minimum Jenkins requirement: {plugin.requiredCore}</span>
+                  <span className="sub">ID: {plugin.name}</span>
+                </h1>
+                <div className="row flex">
+                  <div className="col-md-4">
+                    {plugin.stats &&  <div>Installs: <ReadableInstalls currentInstalls={plugin.stats.currentInstalls} /></div>}
+                    {plugin.scm && plugin.scm.link && <div><a href={plugin.scm.link}>GitHub →</a></div>}
+                    <LastReleased plugin={plugin} />
+                  </div>
+                  <div className="col-md-4 maintainers">
+                    <h5>Maintainers</h5>
+                    <Maintainers maintainers={plugin.maintainers} />
+                  </div>
+                  <div className="col-md-4 dependencies">
+                    <h5>Dependencies</h5>
+                    <Dependencies dependencies={plugin.dependencies} />
+                  </div>
+                </div>
+                {plugin.wiki.content && <div className="content" dangerouslySetInnerHTML={{__html: plugin.wiki.content}} />}
               </div>
             </div>
-            {plugin.wiki.content && <div className="content" dangerouslySetInnerHTML={{__html: plugin.wiki.content}} />}
-          </div>
-        </div>
-        <div className="col-md-3 gutter">
-          <a href={`https://updates.jenkins.io/download/plugins/${plugin.name}` }
-            className="btn btn-secondary">
-            <i className="icon-box" />
-            <span>Archives</span>
-            <span className="v">Get past versions</span>
-          </a>
-          <div className="chart">
-            <LineChart
-              total={plugin.stats.currentInstalls}
-              installations={plugin.stats.installations}
-            />
-          </div>
-          <h5>Labels</h5>
-          <Labels labels={plugin.labels} />
-          {shouldShowWikiUrl(plugin.wiki.url) &&
-              <div className="update-link">
-                <h6>Are you maintaining this plugin?</h6>
-                <p>Visit the <a href={plugin.wiki.url} target="_wiki">Jenkins Plugin Wiki</a> to edit this content.</p>
+            <div className="col-md-3 gutter">
+              <a href={`https://updates.jenkins.io/download/plugins/${plugin.name}` }
+                className="btn btn-secondary">
+                <i className="icon-box" />
+                <span>Archives</span>
+                <span className="v">Get past versions</span>
+              </a>
+              <div className="chart">
+                <LineChart
+                  total={plugin.stats.currentInstalls}
+                  installations={plugin.stats.installations}
+                />
               </div>
-          }
-          <InactiveWarnings securityWarnings={plugin.securityWarnings} />
-        </div>
-      </div>
+              <h5>Labels</h5>
+              <Labels labels={plugin.labels} />
+              {shouldShowWikiUrl(plugin.wiki.url) &&
+                  <div className="update-link">
+                    <h6>Are you maintaining this plugin?</h6>
+                    <p>Visit the <a href={plugin.wiki.url} target="_wiki">Jenkins Plugin Wiki</a> to edit this content.</p>
+                  </div>
+              }
+              <InactiveWarnings securityWarnings={plugin.securityWarnings} />
+            </div>
+          </div>
+        </Body>
+      </ModalView>
     </Layout>
   );
 }

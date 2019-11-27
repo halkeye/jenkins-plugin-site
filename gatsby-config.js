@@ -6,7 +6,7 @@ module.exports = {
     titleTemplate: '%s | The Nameless Site',
   },
   plugins: [
-    'gatsby-plugin-react-helmet-async',
+    'gatsby-plugin-react-helmet',
     {
       resolve: 'gatsby-plugin-manifest',
       options: {
