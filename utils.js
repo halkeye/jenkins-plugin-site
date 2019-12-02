@@ -16,6 +16,7 @@ async function makeReactLayout() {
     'import React from \'react\';',
     'import { Helmet } from \'react-helmet\';',
     'import \'./base.css\';',
+    'import \'./font-icons.css\';',
   ];
 
   console.info(`Downloading header file from '${headerUrl}'`);
