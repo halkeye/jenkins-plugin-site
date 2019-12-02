@@ -38,6 +38,7 @@
   "dependencies": {
     "chart.js": "^2.9.3",
     "cheerio": "^1.0.0-rc.3",
+    "classnames": "^2.2.6",
     "gatsby-plugin-manifest": "^2.2.30",
     "gatsby-plugin-react-helmet": "^3.1.16",
     "gatsby-plugin-react-helmet-async": "^1.0.11",

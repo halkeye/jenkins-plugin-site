@@ -15,6 +15,13 @@ exports.onPreBootstrap = async () => {
 exports.createPages = async ({ graphql, actions }) => {
   const { createPage } = actions;
   const pluginPage = path.resolve('src/templates/plugin.jsx');
+  const indexPage = path.resolve('src/templates/index.jsx');
+
+  createPage({
+    path: '/',
+    component: indexPage,
+    context: { }
+  });
 
   await graphql(`{
     allJenkinsPlugin {

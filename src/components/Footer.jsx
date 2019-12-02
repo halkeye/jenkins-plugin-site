@@ -1,54 +1,81 @@
 import React from 'react';
+import { useStaticQuery, graphql } from 'gatsby';
+
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import classNames from 'classnames';
-import styles from '../styles/Main.css';
-import PluginLink from './PluginLink';
-import { actions } from '../actions';
-import { categories, newly, trend, updated } from '../selectors';
-import { createSelector } from 'reselect';
+import { Helmet } from 'react-helmet';
 
-class Footer extends React.PureComponent {
+import Layout from '../layout';
+import styles from '../Main.css';
+import PluginLink from './PluginLink.jsx';
 
-  static propTypes = {
-    categories: PropTypes.arrayOf(PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      labels: PropTypes.arrayOf(PropTypes.string).isRequired,
-      title: PropTypes.string.isRequired
-    })).isRequired,
-    newly: PropTypes.arrayOf(PropTypes.shape({
-      name: PropTypes.string.isRequired,
-      title: PropTypes.string.isRequired
-    })).isRequired,
-    trend: PropTypes.arrayOf(PropTypes.shape({
-      name: PropTypes.string.isRequired,
-      title: PropTypes.string.isRequired
-    })).isRequired,
-    updated: PropTypes.arrayOf(PropTypes.shape({
-      name: PropTypes.string.isRequired,
-      title: PropTypes.string.isRequired
-    })).isRequired,
-    setCategory: PropTypes.func.isRequired
-  }
+function Footer() {
 
-  handleOnClick = (event) => {
+  const data = useStaticQuery(graphql`
+    query {
+      categories: allJenkinsPluginCategory {
+        edges {
+          node {
+            id
+            title
+          }
+        }
+      }
+      newly: allJenkinsPlugin(sort: {fields: firstRelease, order: DESC}, limit: 10, filter: {firstRelease: {ne: null}}) {
+        edges {
+          node {
+            title
+            name
+            firstRelease
+          }
+        }
+      }
+      updated: allJenkinsPlugin(sort: {fields: releaseTimestamp, order: DESC}, limit: 10, filter: {releaseTimestamp: { ne: null }}) {
+        edges {
+          node {
+            title
+            name
+            firstRelease
+          }
+        }
+      }
+      trend: allJenkinsPlugin(sort: {fields: stats___trend}, limit: 10) {
+        edges {
+          node {
+            title
+            name
+            firstRelease
+          }
+        }
+      }
+    }
+  `);
+
+  const handleOnClick = (event) => {
     event.preventDefault();
     const categoryId = event.target.getAttribute('data-id');
     this.props.setCategory(categoryId);
-  }
+  };
 
-  render() {
-    return(
+  return (
+    <Layout>
+      <Helmet>
+        <title>Jenkins Plugins</title>
+        <meta content="Jenkins Plugins" name="apple-mobile-web-app-title" />
+        <meta content="Jenkins Plugins" name="twitter:title" />
+        <meta content="Jenkins Plugins" property="og:title" />
+        <meta content="Jenkins plugins" property="og:site_name" />
+      </Helmet>
       <div className="NoLabels">
         <div className="container">
           <div className="row">
             <div className={classNames(styles.NoLabels, 'col-md-3 NoLabels')}>
               <fieldset>
                 <legend>Browse categories</legend>
-                { this.props.categories.map((category) => {
+                { data.categories.edges.map(({ node: category }) => {
                   return(
                     <div key={`cat-box-id-${category.id}`} className="Entry-box">
-                      <a href="#" onClick={this.handleOnClick} data-id={category.id}>{category.title}</a>
+                      <a href="#" onClick={handleOnClick} data-id={category.id}>{category.title}</a>
                    </div>
                  );
                 })}
@@ -57,7 +84,7 @@ class Footer extends React.PureComponent {
             <div className="col-md-3">
               <fieldset>
                 <legend>New Plugins</legend>
-                { this.props.newly.map((plugin) => {
+                { data.newly.edges.map(({ node: plugin }) => {
                   return <PluginLink key={plugin.name} name={plugin.name} title={plugin.title} />;
                 })}
               </fieldset>
@@ -65,7 +92,7 @@ class Footer extends React.PureComponent {
             <div className="col-md-3">
               <fieldset>
                 <legend>Recently updated</legend>
-                { this.props.updated.map((plugin) => {
+                { data.updated.edges.map(({node: plugin}) => {
                   return <PluginLink key={plugin.name} name={plugin.name} title={plugin.title} />;
                 })}
               </fieldset>
@@ -73,7 +100,7 @@ class Footer extends React.PureComponent {
             <div className="col-md-3">
               <fieldset>
                 <legend>Trending</legend>
-                { this.props.trend.map((plugin) => {
+                { data.trend.edges.map(({ node: plugin }) => {
                   return <PluginLink key={plugin.name} name={plugin.name} title={plugin.title} />;
                 })}
               </fieldset>
@@ -81,15 +108,8 @@ class Footer extends React.PureComponent {
           </div>
         </div>
       </div>
-    );
-  }
-
+    </Layout>
+  );
 }
 
-const selectors = createSelector(
-  [ categories, newly, trend, updated ],
-  ( categories, newly, trend, updated ) =>
-  ({ categories, newly, trend, updated })
-);
-
-export default connect(selectors, actions)(Footer);
+export default Footer;

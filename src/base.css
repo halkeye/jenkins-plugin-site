@@ -344,7 +344,6 @@ body .item-finder.Tiles a.item,
   opacity: .9;
   border-radius: 3px;
   margin:.25rem;
-  position: relative;
 }
 body .item-finder.Tiles .grid-box > div {padding:.5rem 0 2rem .5rem; text-align:left;}
 body .item-finder.List a.item > div,
@@ -367,8 +366,7 @@ body .item-finder.Tiles a.item .Icon,
   bottom:0;
   right:.75rem;
   display:block;
-  opacity:.75;
-  text-align: center;
+  opacity:.75
 }
 body .item-finder.Tiles a.item:hover .Icon {
   opacity:1
