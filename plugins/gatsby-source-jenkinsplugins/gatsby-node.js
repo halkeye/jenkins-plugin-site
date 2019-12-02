@@ -79,15 +79,12 @@ exports.sourceNodes = async (
       for (const plugin of pluginsContainer.plugins) {
         createNode({
           ...plugin,
-          id: plugin.name,
+          id: plugin.name.trim(),
           parent: null,
           children: [],
           internal: {
             type: 'JenkinsPlugin',
-            contentDigest: crypto
-              .createHash('md5')
-              .update(`plugin${plugin.name}`)
-              .digest('hex')
+            contentDigest: crypto.createHash('md5').update(`plugin${plugin.name.trim()}`).digest('hex')
           }
         });
       }
@@ -113,7 +110,7 @@ exports.sourceNodes = async (
       for (const category of categoriesContainer.categories) {
         createNode({
           ...category,
-          id: category.id,
+          id: category.id.trim(),
           parent: null,
           children: [],
           internal: {
@@ -147,7 +144,7 @@ exports.sourceNodes = async (
       for (const label of labelsContainer.labels) {
         createNode({
           ...label,
-          id: label.id,
+          id: label.id.trim(),
           parent: null,
           children: [],
           internal: {

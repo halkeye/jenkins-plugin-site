@@ -13,7 +13,7 @@ import Spinner from '../components/Spinner';
 
 function Dependencies({ dependencies } ) {
   const [isShowImplied, setShowImplied] = React.useState(false);
-  console.log({ isShowImplied });
+  // console.log({ isShowImplied });
   const showImplied = (e) => {
     e.preventDefault();
     setShowImplied(true);
@@ -382,8 +382,8 @@ PluginPage.propTypes = {
 
 /* eslint no-undef: "off" */
 export const pageQuery = graphql`
-  query PluginBySlug($id: String!) {
-    jenkinsPlugin(id: {eq: $id}) {
+  query PluginBySlug($name: String!) {
+    jenkinsPlugin(name: {eq: $name}) {
       id
       gav
       title

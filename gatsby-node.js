@@ -40,10 +40,10 @@ exports.createPages = async ({ graphql, actions }) => {
 
     result.data.allJenkinsPlugin.edges.forEach(edge => {
       createPage({
-        path: edge.node.name,
+        path: edge.node.name.trim(),
         component: pluginPage,
         context: {
-          id: edge.node.id
+          name: edge.node.name.trim()
         }
       });
     });
