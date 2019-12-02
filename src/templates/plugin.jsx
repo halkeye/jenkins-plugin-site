@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 
 import moment from 'moment';
 import { Helmet } from 'react-helmet';
-import ModalView, {Body, Header} from 'react-header-modal';
 
 import { cleanTitle } from '../commons/helper';
 import Layout from '../layout';
@@ -266,11 +265,8 @@ function PluginPage({ data: { jenkinsPlugin: plugin }}) {
         <meta content={cleanTitle(plugin.title)} property="og:title" />
         <meta content="Jenkins plugin" property="og:site_name" />
       </Helmet>
-      <ModalView hideOnOverlayClicked isVisible ignoreEscapeKey {...{beforeClose}}>
-        <Header>
-          <div className="back" onClick={beforeClose}>Find plugins</div>
-        </Header>
-        <Body>
+      <section className="modalview">
+        <div className="dialog">
           <div className="row flex">
             <div className="col-md-9 main">
               <div className="container-fluid padded">
@@ -324,8 +320,8 @@ function PluginPage({ data: { jenkinsPlugin: plugin }}) {
               <InactiveWarnings securityWarnings={plugin.securityWarnings} />
             </div>
           </div>
-        </Body>
-      </ModalView>
+        </div>
+      </section>
     </Layout>
   );
 }

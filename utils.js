@@ -15,6 +15,7 @@ async function makeReactLayout() {
   const lines = [
     'import React from \'react\';',
     'import { Helmet } from \'react-helmet\';',
+    'import \'./base.css\';',
   ];
 
   console.info(`Downloading header file from '${headerUrl}'`);
@@ -50,8 +51,11 @@ async function makeReactLayout() {
 	// No jquery in react
   $('script[src$="/assets/bower/jquery/jquery.min.js"]').remove();
   // FIXME - delete all the bower items?
+  //
+  // padd as per https://stackoverflow.com/questions/11124777/twitter-bootstrap-navbar-fixed-top-overlapping-site
+  $('head').append('<style>{` body { padding-top: 40px; } @media screen and (max-width: 768px) { body { padding-top: 0px; } } `}</style>');
 
-  $('#grid-box').append('{children}');
+  $('#grid-box').addClass('container').append('{children}');
 
   const keyConversion = {
     class: 'className',
@@ -81,9 +85,10 @@ async function makeReactLayout() {
     if (node.type === 'comment') {
       return;
     } else if (node.type === 'text') {
-      const text = node.data.trim() === '{children}' ?
+      const text = node.data;/*.trim() === '{children}' ?
         node.data.trim() : 
         node.data.trim().replace(/([{}]+)/g,'{\'$1\'}'); // from https://github.com/facebook/react/issues/1545#issuecomment-461696773
+        */
       lines.push(`${prefix}${text}`);
     } else if (node.children && node.children.length) {
       lines.push(`${prefix}<${node.name} ${attrs}>`);
